@@ -14,7 +14,7 @@ def sum_numbers_in_string(input_string):
 
 
 def stdin_sum_digits():
-    return sum_numbers_in_string(input("Write some text"))
+    print(sum_numbers_in_string(input("Write some text:")))
 
 
 def sum_until_off(input_string):
@@ -79,6 +79,7 @@ def main():
     text = "abc12Off=123Onedf=2hv6=Off56On8="
     print(sum_until_off_remade(text))
     sum_until_equals(text)
+    stdin_sum_digits()
 
 
 if __name__ == "__main__":
