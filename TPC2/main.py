@@ -2,6 +2,8 @@ import re
 
 
 def sum_numbers_in_string(input_string):
+    if input_string is None:
+        return 0
     # Use regular expressions to find all sequences of numbers in the input string
     numbers = re.findall(r'\d+', input_string)
 
@@ -60,9 +62,23 @@ def sum_after_on(input_string):
     return total_sum
 
 
+def sum_until_equals(input_str):
+    if input_str is None:
+        return 0
+    equals_index = input_str.find("=")
+    rest = None
+    if equals_index != -1:
+        sum_to_print = input_str[:equals_index]
+        rest = input_str[equals_index + 1:]
+        print(sum_numbers_in_string(sum_to_print))
+
+    return sum_until_equals(rest)
+
+
 def main():
-    text = "abc12Off123Onedf2hv6Off56On8"
+    text = "abc12Off=123Onedf=2hv6=Off56On8="
     print(sum_until_off_remade(text))
+    sum_until_equals(text)
 
 
 if __name__ == "__main__":
