@@ -1,20 +1,23 @@
 import re
 
 
-def sum_numbers_in_string(input_string):
-    if input_string is None:
-        return 0
-    # Use regular expressions to find all sequences of numbers in the input string
-    numbers = re.findall(r'\d+', input_string)
-
-    # Convert each string of numbers to an integer and sum them up
-    total_sum = sum(int(num) for num in numbers)
-
+def sum_digits(text: str):
+    total_sum = 0
+    current_num = ''
+    for c in text:
+        if c.isdigit():
+            current_num += c
+        else:
+            if current_num:
+                total_sum += int(current_num)
+                current_num = ''
+    if current_num:
+        total_sum += int(current_num)
     return total_sum
 
 
 def stdin_sum_digits():
-    print(sum_numbers_in_string(input("Write some text:")))
+    print(sum_digits(input("Write some text:")))
 
 
 def sum_until_off(input_string):
@@ -26,7 +29,7 @@ def sum_until_off(input_string):
         input_string = input_string[:off_index]
 
     # Use the original sum_numbers_in_string() function to sum all numbers in the remaining input string
-    total_sum = sum_numbers_in_string(input_string)
+    total_sum = sum_digits(input_string)
 
     return total_sum
 
@@ -42,7 +45,7 @@ def sum_until_off_remade(input_string):
         input_string = input_string[:off_index]
 
     # Use the original sum_numbers_in_string() function to sum all numbers in the remaining input string
-    total_sum = sum_numbers_in_string(input_string) + sum_after_on(rest)
+    total_sum = sum_digits(input_string) + sum_after_on(rest)
 
     return total_sum
 
@@ -70,13 +73,14 @@ def sum_until_equals(input_str):
     if equals_index != -1:
         sum_to_print = input_str[:equals_index]
         rest = input_str[equals_index + 1:]
-        print(sum_numbers_in_string(sum_to_print))
+        print(sum_digits(sum_to_print))
 
     return sum_until_equals(rest)
 
 
 def main():
     text = "abc12Off=123Onedf=2hv6=Off56On8="
+    print(sum_digits(text))
     print(sum_until_off_remade(text))
     sum_until_equals(text)
     stdin_sum_digits()
