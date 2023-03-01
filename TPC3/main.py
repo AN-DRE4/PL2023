@@ -1,4 +1,6 @@
 import re
+import json
+from math import floor
 
 
 def count_lines_by_year(filename):
@@ -125,12 +127,90 @@ def count_names_by_century(filename):
     return dict(sorted(first_name_counts.items())), dict(sorted(last_name_counts.items()))
 
 
+def freq_names(filename):
+    file = open(filename, "r")
+    er_names = re.compile(r"(?P<first_name>\w+)[^\d:-]+ (?P<last_name>\w+)")
+    er_date = re.compile(r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)")
+    all_first_names = dict()
+    all_last_names = dict()
+    for line in file.readlines():
+        process = er_date.search(line)
+        if process is not None:
+            year = int(process.groupdict().get("year"))
+            century = floor(year / 100) + 1
+
+            first_last_name = er_names.findall(line)
+            for f_l_name in first_last_name:
+                first_name = f_l_name[0]
+                # print(first_name)
+                # add first name to dict
+                if century not in all_first_names:
+                    all_first_names[century] = {}
+                all_first_names[century][first_name] = all_first_names[century].get(first_name, 0) + 1
+                last_name = f_l_name[1]
+                # add last name to dict
+                if century not in all_last_names:
+                    all_last_names[century] = {}
+                all_last_names[century][last_name] = all_last_names[century].get(last_name, 0) + 1
+    file.close()
+    return dict(sorted(all_first_names.items())), dict(sorted(all_last_names.items()))
+
+
+def freq_relation(filename):
+    file = open(filename, "r")
+    relation = {}
+    pattern = r',[^\s*\d+][\w\s]*\.[ ]Proc\.'
+    match = re.compile(pattern)
+    for line in file.readlines():
+        rel = match.findall(line)
+        if rel:
+            for r in rel:
+                r = str(r).lower()
+                r = r[1:-7]
+                if r not in relation:
+                    relation[r] = 1
+                else:
+                    relation[r] = relation.get(r) + 1
+    file.close()
+
+    return dict(sorted(relation.items()))
+
+
+def to_json(filepath: str):
+    if re.match(r".json", filepath) is None:
+        filepath = filepath + ".json"
+    out_file = open(filepath, "w")
+    file = open("processos.txt", "r")
+    pattern = re.compile(r"(?P<id>\d+)[::]+(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)[::]+(?P<name>[\w\s]+)")
+    # pattern to get the id, year, month, day and name from a line in the format id::year-month-day::name
+
+    for i in range(0, 20):
+        line = file.readline(i)
+        print(line)
+        if pattern.search(line) != None:
+            data = pattern.search(line).groupdict()
+            print(data)
+            out_file.write("{")
+            for k, v in data.items():
+                if k == "id":
+                    out_file.write(f"\n    {str(k)}: {str(v)}")
+                else:
+                    out_file.write(f",\n    {str(k)}: {str(v)}")
+            out_file.write("\n}\n")
+
+    out_file.close()
+    file.close()
+
 
 def main():
+    filename = "processos.txt"
     # print(count_processes_by_year("processos.txt"))
-    first_names, last_surnames = count_names_by_century("processos.txt")
+    # first_names, last_surnames = count_names_by_century("processos.txt")
     # print(first_names)
-    print(last_surnames)
+    # print(last_surnames)
+    #print(freq_names(filename))
+    #print(freq_relation(filename))
+    to_json("teste")
     return
 
 
