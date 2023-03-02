@@ -142,7 +142,7 @@ def freq_names(filename):
             first_last_name = er_names.findall(line)
             for f_l_name in first_last_name:
                 first_name = f_l_name[0]
-                # print(first_name)
+                print(first_name)
                 # add first name to dict
                 if century not in all_first_names:
                     all_first_names[century] = {}
@@ -195,6 +195,96 @@ def to_json(filepath: str):
     file.close()
 
 
+def split_first_last_name(name):
+    return re.match(r"\w+\b", name).group(), re.search(r"\b\w+$", name).group()
+
+
+def top5_names(filename):
+    file = open(filename, "r")
+    pattern = re.compile(
+        r"(?P<id>\d+)::(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)::(?P<nome>[\w\s]+)::(?P<nomePai>[\w\s]+)?::(?P<nomeMae>[\w\s]+)?")
+    first_name, last_name = split_first_last_name()
+
+
+def parse(path):
+    file = open(path)
+    regex_str = r"(?P<dir>\d+)::(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})::(?P<name>[a-zA-Z ]+)::(?P<father>[a-zA-Z ]+)::(?P<mother>[a-zA-Z ]+)::(?P<obs>[^:]*)::"
+    res = []
+    regex = re.compile(regex_str)
+    for line in file.readlines():
+        if match := regex.finditer(line):
+            res = res + [m.groupdict() for m in match]
+
+    return res
+
+
+def top5_names_freq(data, century, idx):
+    names = {}
+
+    for entry in data:
+        if (int(entry["year"]) - 1) // 100 + 1 == century:
+
+            name = split_first_last_name(entry["name"])
+            print(name)
+            if name[idx] not in names:
+                names[name[idx]] = 0
+
+            names[name[idx]] += 1
+
+            father = split_first_last_name(entry["father"])
+            if father[idx] not in names:
+                names[father[idx]] = 0
+
+            names[father[idx]] += 1
+
+            mother = split_first_last_name(entry["mother"])
+            if mother[idx] not in names:
+                names[mother[idx]] = 0
+
+            names[mother[idx]] += 1
+    res = sorted(names.items(), key=lambda x: x[1], reverse=True)[:5]
+    return res
+
+
+def top5_names_freq_century(data):
+    first_name = {}
+    last_name = {}
+    for i in range(0, 22):
+        first_name[i] = top5_names_freq(data, i, 0)
+        last_name[i] = top5_names_freq(data, i, 1)
+
+    return first_name, last_name
+
+
+def top5_names_freq_all(data):
+    first_name, last_name = top5_names_freq_century(data)
+    sum_first_name = {}
+    sum_last_name = {}
+    aux = []
+
+    for lst in first_name.values():
+        aux.extend(lst)
+        for k, v in lst:
+            if k not in sum_first_name:
+                sum_first_name[k] = v
+            else:
+                sum_first_name[k] += v
+
+    aux.clear()
+
+    for lst in last_name.values():
+        aux.extend(lst)
+        for k, v in lst:
+            if k not in sum_last_name:
+                sum_last_name[k] = v
+            else:
+                sum_last_name[k] += v
+
+    f_names = sorted(sum_first_name.items(), key=lambda x: x[1], reverse=True)[:5]
+    l_names = sorted(sum_last_name.items(), key=lambda x: x[1], reverse=True)[:5]
+    return f_names, l_names
+
+
 def main():
     filename = "processos.txt"
     # print(count_processes_by_year("processos.txt"))
@@ -202,7 +292,9 @@ def main():
     # print(first_names)
     # print(last_surnames)
     # print(freq_names(filename))
-    print(freq_relation(filename))
+    # print(freq_relation(filename))
+    data = parse(filename)
+    print(top5_names_freq_all(data))
     to_json("teste")
     return
 
