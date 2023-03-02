@@ -159,7 +159,7 @@ def freq_names(filename):
 def freq_relation(filename):
     file = open(filename, "r")
     relation = {}
-    pattern = r',[^\s*\d+][\w\s]*\.[ ]Proc\.'
+    pattern = r',[^\s*\d+][\w\s]*\.[\s]+Proc\.'
     match = re.compile(pattern)
     for line in file.readlines():
         rel = match.findall(line)
@@ -181,23 +181,16 @@ def to_json(filepath: str):
         filepath = filepath + ".json"
     out_file = open(filepath, "w")
     file = open("processos.txt", "r")
-    pattern = re.compile(r"(?P<id>\d+)[::]+(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)[::]+(?P<name>[\w\s]+)")
-    # pattern to get the id, year, month, day and name from a line in the format id::year-month-day::name
-
+    pattern = re.compile(
+        r"(?P<id>\d+)::(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)::(?P<nome>[\w\s]+)::(?P<nomePai>[\w\s]+)?::(?P<nomeMae>[\w\s]+)?::(?P<observacoes>.+[^:])?::")
+    dict1 = {}
     for i in range(0, 20):
-        line = file.readline(i)
-        print(line)
-        if pattern.search(line) != None:
+        sno = 'Linha ' + str(i + 1)
+        line = file.readline()
+        if pattern.search(line) is not None:
             data = pattern.search(line).groupdict()
-            print(data)
-            out_file.write("{")
-            for k, v in data.items():
-                if k == "id":
-                    out_file.write(f"\n    {str(k)}: {str(v)}")
-                else:
-                    out_file.write(f",\n    {str(k)}: {str(v)}")
-            out_file.write("\n}\n")
-
+            dict1[sno] = data
+    json.dump(dict1, out_file, indent=8, sort_keys=False)
     out_file.close()
     file.close()
 
@@ -208,8 +201,8 @@ def main():
     # first_names, last_surnames = count_names_by_century("processos.txt")
     # print(first_names)
     # print(last_surnames)
-    #print(freq_names(filename))
-    #print(freq_relation(filename))
+    # print(freq_names(filename))
+    print(freq_relation(filename))
     to_json("teste")
     return
 
