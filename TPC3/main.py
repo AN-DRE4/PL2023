@@ -107,10 +107,10 @@ def count_names_by_century(filename):
             # if first_name_match and last_name_match:
             if name_match:
                 name = name_match.group()
-                print(name)
+                # print(name)
 
                 first_name = name.split(" ")[0]
-                print(first_name)
+                # print(first_name)
                 last_name = name.split(" ")[2]
 
                 # Increment the count for this first name in this century
@@ -142,7 +142,7 @@ def freq_names(filename):
             first_last_name = er_names.findall(line)
             for f_l_name in first_last_name:
                 first_name = f_l_name[0]
-                print(first_name)
+                # print(first_name)
                 # add first name to dict
                 if century not in all_first_names:
                     all_first_names[century] = {}
@@ -208,7 +208,7 @@ def top5_names(filename):
 
 def parse(path):
     file = open(path)
-    regex_str = r"(?P<dir>\d+)::(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})::(?P<name>[a-zA-Z ]+)::(?P<father>[a-zA-Z ]+)::(?P<mother>[a-zA-Z ]+)::(?P<obs>[^:]*)::"
+    regex_str = r"(?P<dir>\d+)::(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})::(?P<name>[\w\s]+)::(?P<father>[\w\s]+)::(?P<mother>[\w\s]+)::(?P<obs>[^:]*)::"
     res = []
     regex = re.compile(regex_str)
     for line in file.readlines():
@@ -225,7 +225,7 @@ def top5_names_freq(data, century, idx):
         if (int(entry["year"]) - 1) // 100 + 1 == century:
 
             name = split_first_last_name(entry["name"])
-            print(name)
+            # print(name)
             if name[idx] not in names:
                 names[name[idx]] = 0
 
@@ -260,21 +260,16 @@ def top5_names_freq_all(data):
     first_name, last_name = top5_names_freq_century(data)
     sum_first_name = {}
     sum_last_name = {}
-    aux = []
 
-    for lst in first_name.values():
-        aux.extend(lst)
-        for k, v in lst:
+    for names in first_name.values():
+        for k, v in names:
             if k not in sum_first_name:
                 sum_first_name[k] = v
             else:
                 sum_first_name[k] += v
 
-    aux.clear()
-
-    for lst in last_name.values():
-        aux.extend(lst)
-        for k, v in lst:
+    for names in last_name.values():
+        for k, v in names:
             if k not in sum_last_name:
                 sum_last_name[k] = v
             else:
@@ -294,6 +289,7 @@ def main():
     # print(freq_names(filename))
     # print(freq_relation(filename))
     data = parse(filename)
+    print(top5_names_freq_century(data))
     print(top5_names_freq_all(data))
     to_json("teste")
     return
