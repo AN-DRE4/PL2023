@@ -208,7 +208,8 @@ def top5_names(filename):
 
 def parse(path):
     file = open(path)
-    regex_str = r"(?P<dir>\d+)::(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})::(?P<name>[\w\s]+)::(?P<father>[\w\s]+)::(?P<mother>[\w\s]+)::(?P<obs>[^:]*)::"
+    regex_str = r"(?P<dir>\d+)::(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})::(?P<name>[\w\s]+)::(?P<father>[" \
+                r"\w\s]+)::(?P<mother>[\w\s]+)::(?P<obs>[^:]*):: "
     res = []
     regex = re.compile(regex_str)
     for line in file.readlines():
