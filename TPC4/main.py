@@ -84,13 +84,12 @@ def exercise(src_file, dest_file):
         for i in range(0, len(data)):
             data[i][f"{k}_{aggregates[k]}"] = data[i][k]
             del data[i][k]
-
     with open(dest_file, "w") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 def main():
-    exercise("csv/alunos11.csv", "json/alunos11.json")
+    exercise("csv/alunos3.csv", "json/alunos3.json")
 
 
 if __name__ != "main":
