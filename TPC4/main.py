@@ -1,5 +1,7 @@
 import re
 import json
+
+
 def process_list(str):
     matches = re.findall(r"\d+", str)
     return [int(m) for m in matches]
