@@ -10,20 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\TPC4\alunos1.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\TPC4\csv\alunos12.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>
