@@ -105,7 +105,7 @@ def cabine_telefonica():
                 numero_str = input("maq: Escreva T= seguido do número que pretende ligar (Exemplo T=912345678)\n")
                 if numero_str == "ABORTAR":
                     print("maq: Interrompendo atividade e devolvendo moedas\n")
-                    print("maq: troco = " + str(saldo) + "€; Volte Sempre!\n")
+                    print("maq: troco = " + str(calculate_change(saldo)) + "€; Volte Sempre!\n")
                     break
                 if numero_str == "POUSAR":
                     pousar = True
