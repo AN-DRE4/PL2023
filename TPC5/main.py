@@ -115,7 +115,7 @@ def cabine_telefonica():
                     print("maq: Ação inválida, tente novamente.\n")
                     continue
                 choice = tratarNumero(numero_matches[0])
-                match choice:
+                match choice:  # Only Python 3.10+
                     case 1:
                         print("maq: Esse número não é permitido neste telefone. Queira discar novo número!\n")
                         continue
